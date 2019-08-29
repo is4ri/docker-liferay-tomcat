@@ -4,9 +4,10 @@ LABEL maintainer="Emertyl <lremy@is4ri.com>"
 WORKDIR /usr/local
 
 ENV LIFERAY_HOME=/usr/local/liferay-portal
+ENV LIFERAY_BUNDLE=liferay-portal-tomcat.tar.gz
 ENV CATALINA_HOME=$LIFERAY_HOME/tomcat
 ENV PATH=$CATALINA_HOME/bin:$PATH
-ENV LIFERAY_TOMCAT_URL=https://cdn.lfrs.sl/releases.liferay.com/portal/6.2.3-ga4/liferay-portal-tomcat-6.2-ce-ga4-20150416163831865.zip
+ENV LIFERAY_TOMCAT_URL=https://cdn.lfrs.sl/releases.liferay.com/portal/7.2.0-ga1/liferay-ce-portal-tomcat-7.2.0-ga1-20190531153709761.tar.gz
 
 RUN apt-get -qq update && \
 	apt-get -qq install telnet && \
@@ -14,11 +15,11 @@ RUN apt-get -qq update && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 	useradd -ms /bin/bash liferay && \
 	set -x && \
-	curl -fSL "$LIFERAY_TOMCAT_URL" -o liferay-portal-tomcat.zip && \
-	unzip liferay-portal-tomcat.zip && \
-	rm liferay-portal-tomcat.zip && \
-	mv /usr/local/liferay-portal-6.2-ce-ga4 $LIFERAY_HOME && \
-	mv $LIFERAY_HOME/tomcat-7.0.42 $CATALINA_HOME && \
+	curl -fSL "$LIFERAY_TOMCAT_URL" -o "$LIFERAY_BUNDLE" && \
+	tar xvzf "$LIFERAY_BUNDLE" && \
+	rm "$LIFERAY_BUNDLE" && \
+	mv /usr/local/liferay-portal-7.2.0-ga1 $LIFERAY_HOME && \
+	mv $LIFERAY_HOME/tomcat-9.0.17 $CATALINA_HOME && \
 	rm -rf $CATALINA_HOME/work/* && \
 	mkdir -p $LIFERAY_HOME/data/document_library && \
 	mkdir -p $LIFERAY_HOME/data/lucene && \
@@ -36,5 +37,11 @@ USER liferay
 
 EXPOSE 8080/tcp
 EXPOSE 9901/tcp
+
+HEALTHCHECK \
+	--interval=1m \
+	--start-period=1m \
+	--timeout=1m \
+	CMD curl -fsS "http://localhost:8080/c/portal/layout" || exit 1
 
 CMD $CATALINA_HOME/bin/startup.sh && tail -f $CATALINA_HOME/logs/catalina.out
