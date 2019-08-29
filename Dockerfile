@@ -38,10 +38,4 @@ USER liferay
 EXPOSE 8080/tcp
 EXPOSE 9901/tcp
 
-HEALTHCHECK \
-	--interval=1m \
-	--start-period=1m \
-	--timeout=1m \
-	CMD curl -fsS "http://localhost:8080/c/portal/layout" || exit 1
-
 CMD $CATALINA_HOME/bin/startup.sh && tail -f $CATALINA_HOME/logs/catalina.out
