@@ -10,7 +10,7 @@ ENV PATH=$CATALINA_HOME/bin:$PATH
 ENV LIFERAY_TOMCAT_URL=https://cdn.lfrs.sl/releases.liferay.com/portal/7.2.0-ga1/liferay-ce-portal-tomcat-7.2.0-ga1-20190531153709761.tar.gz
 
 RUN apt-get -qq update && \
-	apt-get -qq install telnet && \
+	apt-get -qq install telnet imagemagick ghostscript && \
 	apt-get -qq clean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 	useradd -ms /bin/bash liferay && \
@@ -30,6 +30,7 @@ RUN apt-get -qq update && \
 	echo "include-and-override=\${liferay.home}/is4ri/portal-is4ri.properties" >> $CATALINA_HOME/webapps/ROOT/WEB-INF/classes/portal-ext.properties
 
 COPY ./conf/setenv.sh $CATALINA_HOME/bin/setenv.sh
+COPY ./conf/xuggle-xuggler-arch-x86_64-pc-linux-gnu.jar $CATALINA_HOME/shared/lib/xuggle-xuggler-arch-x86_64-pc-linux-gnu.jar
 
 RUN chown -R liferay:liferay $LIFERAY_HOME
 
