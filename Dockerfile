@@ -1,13 +1,13 @@
-FROM openjdk:7
+FROM openjdk:8
 LABEL maintainer="Emertyl <lremy@is4ri.com>"
 
 WORKDIR /usr/local
 
-ENV LIFERAY_HOME=/usr/local/liferay-portal
-ENV LIFERAY_BUNDLE=liferay-portal-tomcat.tar.gz
+ENV LIFERAY_HOME=/usr/local/liferay-portal \
+	LIFERAY_BUNDLE=liferay-portal-tomcat.tar.gz \
+	LIFERAY_TOMCAT_URL=https://cdn.lfrs.sl/releases.liferay.com/portal/7.2.0-ga1/liferay-ce-portal-tomcat-7.2.0-ga1-20190531153709761.tar.gz
 ENV CATALINA_HOME=$LIFERAY_HOME/tomcat
 ENV PATH=$CATALINA_HOME/bin:$PATH
-ENV LIFERAY_TOMCAT_URL=https://cdn.lfrs.sl/releases.liferay.com/portal/7.2.0-ga1/liferay-ce-portal-tomcat-7.2.0-ga1-20190531153709761.tar.gz
 
 RUN apt-get -qq update && \
 	apt-get -qq install telnet imagemagick ghostscript && \
